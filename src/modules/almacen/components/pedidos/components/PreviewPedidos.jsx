@@ -33,7 +33,7 @@ const PreviewPedidos = ({ pedidoSeleccionado }) => {
             <div className="flex ">
               <p className="text-xs  pb-3">N° Vale</p>
               <Barcode
-                value={pedidoSeleccionado?.numero_vale || "000"}
+                value={pedidoSeleccionado?.num_vale || "000"}
                 format="CODE128"
                 width={1}
                 height={30}
@@ -84,7 +84,7 @@ const PreviewPedidos = ({ pedidoSeleccionado }) => {
                   className="border-1 border-black px-2 pb-3   text-xs text-center"
                   style={{ width: "150px" }}
                 >
-                  {pedidoSeleccionado?.numero_vale || ""}
+                  {pedidoSeleccionado?.num_vale || ""}
                 </div>
               </div>
               <div className="flex gap-1">

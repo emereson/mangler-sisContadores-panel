@@ -185,7 +185,7 @@ const ConfirmarPedidoModal = ({
     <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      className="min-h-[90vh]"
+      className="max-h-[80vh] min-h-[80vh] overflow-auto"
       size="5xl"
     >
       {loading && (

@@ -1,0 +1,9 @@
+#root {
+  width: 100vw;
+  margin: 0 auto;
+}
+.disabled-input {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.6;
+}

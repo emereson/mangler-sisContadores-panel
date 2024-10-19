@@ -59,7 +59,7 @@ const LoginForm = () => {
       >
         <div className="flex flex-col gap-2 items-center">
           <h1 className="text-lg font-bold text-black">Sistema Contadores</h1>
-          <img src="/logo.png" alt="" className="w-32" />
+          <img src="/acciona.jpeg" alt="" className="w-32" />
         </div>
 
         <div className="w-full flex flex-col items-center justify-center text-center gap-5">

@@ -69,9 +69,9 @@ const LoginForm = () => {
             }}
             type="text"
             variant="bordered"
-            label="DNI"
-            {...register("dni", { required: "El DNI es obligatorio" })}
-            id="dni"
+            label="CODIGO DE USUARIO"
+            {...register("codigo", { required: "El codigo es obligatorio" })}
+            id="codigo"
             isInvalid={!!errors.dni}
             color={errors.dni ? "danger" : ""}
             errorMessage={errors.dni?.message}

@@ -40,7 +40,7 @@ const TablaMateriales = ({ resetTable }) => {
         <TableHeader>
           <TableColumn>CODIGO</TableColumn>
           <TableColumn>DESCRIPCION</TableColumn>
-          <TableColumn>UBICAION</TableColumn>
+          <TableColumn>CATEGORÌA</TableColumn>
           <TableColumn>ESTADO</TableColumn>
           <TableColumn>ACCIONES</TableColumn>
         </TableHeader>

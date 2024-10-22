@@ -29,11 +29,11 @@ const Users = ({ userData }) => {
     });
   }, [resetTable, search]);
 
-  // useEffect(() => {
-  //   if (userData.role !== "admin") {
-  //     navigate("/");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (userData.role !== "Administrador") {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="w-full overflow-hidden flex flex-col gap-4   bg-white p-4 py-5">
@@ -82,6 +82,7 @@ const Users = ({ userData }) => {
       />
       {selectedModal === "update" && (
         <UpdateUserModal
+          key={selectedUser?.id}
           isOpen={isOpen}
           onOpenChange={onOpenChange}
           selectedUser={selectedUser}

@@ -103,15 +103,13 @@ const ModalMateriales = ({ onOpenChange, isOpen }) => {
                   errorMessage={errors?.descripcion?.message}
                 />
 
-                {/* Campo Ubicación */}
                 <Select
-                  label="Ubicación"
+                  label="categoría"
                   variant="bordered"
                   {...register("ubicacion", {
                     required: "La ubicación es obligatoria",
                   })}
                   id="ubicacion"
-                  defaultSelectedKeys={["Hidràulicos"]}
                   isInvalid={!!errors?.ubicacion}
                   color={errors?.ubicacion ? "danger" : ""}
                   errorMessage={errors?.ubicacion?.message}

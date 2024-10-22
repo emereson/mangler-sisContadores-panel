@@ -5,9 +5,9 @@ import { Button, Input } from "@nextui-org/react";
 import config from "../../../../utils/getToken";
 import * as XLSX from "xlsx";
 import formatDate from "../../../../hooks/FormatDate";
-import TablaSolicitudClacs from "./components/TablaSolicitudClacs";
+import TablaSolicitudDevoluciones from "./components/TablaSolicitudDevoluciones";
 
-const SolicitudClacs = ({ userData }) => {
+const SolicitudDevoluciones = ({ userData }) => {
   const [fechaInicio, setfechaInicio] = useState(getTodayDate());
   const [fechaFinal, setfechaFinal] = useState(getTodayDate());
   const [pedidos, setPedidos] = useState();
@@ -15,21 +15,22 @@ const SolicitudClacs = ({ userData }) => {
   const fetchPedidos = () => {
     const url = `${
       import.meta.env.VITE_URL_API
-    }/pedido?fecha_inicio=${fechaInicio}&fecha_final=${fechaFinal}`;
+    }/pedido/devolucion/?fecha_inicio=${fechaInicio}&fecha_final=${fechaFinal}`;
 
     axios.get(url, config).then((res) => {
       setPedidos(res.data.pedidos);
     });
   };
 
+  console.log(pedidos);
+
   useEffect(() => {
     fetchPedidos();
   }, []);
-
   const exportToExcel = () => {
     // Prepara los datos para el archivo Excel
     const data = pedidos?.flatMap((pedido) =>
-      pedido.clacs.map((clac) => ({
+      pedido.lista_pedidos.map((cotador) => ({
         ACTIVIDAD: "A", // Ajusta si necesitas otro valor
         FECHA: formatDate(pedido?.fecha),
         NUM_PEDIDO: pedido.id,
@@ -38,7 +39,6 @@ const SolicitudClacs = ({ userData }) => {
         BASE: "MADRID", // Ajusta si necesitas otro valor
         OPE_CODIGO: pedido.user.codigo,
         OPE_NOMBRE: `${pedido.user.nombre} ${pedido.user.apellidos}`,
-        SERIE: clac.codigo,
       }))
     );
 
@@ -53,21 +53,21 @@ const SolicitudClacs = ({ userData }) => {
         "BASE",
         "OPE_CODIGO",
         "OPE_NOMBRE",
-        "SERIE",
       ],
     });
 
     // Crea un nuevo libro de trabajo
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Clacs");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Contadores");
 
     // Exporta el libro de trabajo
-    XLSX.writeFile(workbook, "clacs.xlsx");
+    XLSX.writeFile(workbook, "contadores.xlsx");
   };
 
   return (
     <div className="w-full  h-full p-4 flex flex-col gap-3">
-      <h2 className="font-semibold text-lg">Solicitud Clacs</h2>
+      <h2 className="font-semibold text-lg">Solicitud De Devoluciones</h2>
+
       <div className="flex  items-end justify-between">
         <div className="flex gap-4 items-end">
           <Input
@@ -114,9 +114,9 @@ const SolicitudClacs = ({ userData }) => {
           EXEL
         </Button>
       </div>
-      <TablaSolicitudClacs pedidos={pedidos} />
+      <TablaSolicitudDevoluciones pedidos={pedidos} />
     </div>
   );
 };
 
-export default SolicitudClacs;
+export default SolicitudDevoluciones;

@@ -22,8 +22,6 @@ const SolicitudContadores = ({ userData }) => {
     });
   };
 
-  console.log(pedidos);
-
   useEffect(() => {
     fetchPedidos();
   }, []);

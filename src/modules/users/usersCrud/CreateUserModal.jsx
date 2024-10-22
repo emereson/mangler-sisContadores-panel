@@ -86,7 +86,12 @@ const CreateUserModal = ({
                     variant="bordered"
                     type="text"
                     label="Codigo"
-                    {...register("codigo", {})}
+                    {...register("codigo", {
+                      required: "El codigo es obligatorio.",
+                    })}
+                    isInvalid={!!errors.codigo}
+                    color={errors.codigo ? "danger" : ""}
+                    errorMessage={errors.codigo?.message}
                     endContent={
                       <FaBarcode className="text-neutral-600 text-2xl pointer-events-none flex-shrink-0" />
                     }
@@ -202,13 +207,13 @@ const CreateUserModal = ({
                   <Select
                     label="role"
                     {...register("role")}
-                    defaultSelectedKeys={["almacen"]}
+                    defaultSelectedKeys={["Almacén"]}
                     variant="bordered"
                   >
-                    <SelectItem key="almacen">Almacen</SelectItem>
-                    <SelectItem key="contador">Contador</SelectItem>
-                    <SelectItem key="capataz">Capataz</SelectItem>
-                    <SelectItem key="admin">Administrador</SelectItem>
+                    <SelectItem key="Administrador">Administrador</SelectItem>
+                    <SelectItem key="Brigada">Brigada</SelectItem>
+                    <SelectItem key="Capataz">Capataz</SelectItem>
+                    <SelectItem key="Almacén">Almacén</SelectItem>
                   </Select>
                 </div>
 

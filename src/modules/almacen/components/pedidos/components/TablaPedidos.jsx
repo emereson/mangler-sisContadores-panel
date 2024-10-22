@@ -27,7 +27,10 @@ const TablaPedidos = ({ pedidos, setPedidoSeleccionado }) => {
       >
         <TableHeader>
           <TableColumn>FECHA</TableColumn>
-          <TableColumn>PEDIDO</TableColumn>
+          <TableColumn>
+            N° DE <br />
+            PEDIDO
+          </TableColumn>
           <TableColumn>ACTIVIDAD</TableColumn>
           <TableColumn>CODIGO</TableColumn>
           <TableColumn>OPERARIO</TableColumn>

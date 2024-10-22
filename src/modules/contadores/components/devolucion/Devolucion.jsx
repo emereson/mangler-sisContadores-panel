@@ -5,14 +5,14 @@ import {
   Input,
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
-import PreviewPedidos from "./components/PreviewPedidos";
-import TablaPedidos from "./components/TablaPedidos";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import config from "../../../../utils/getToken";
 import getTodayDate from "../../../../hooks/getTodayDate";
+import PreviewDevoluciones from "./components/PreviewDevoluciones";
+import TablaDevolucion from "./components/TablaDevolucion";
 
-const NuevoPedido = ({ userData }) => {
+const Devolucion = ({ userData }) => {
   const {
     register,
     handleSubmit,
@@ -72,7 +72,7 @@ const NuevoPedido = ({ userData }) => {
       <div className="w-1/2 pr-4  h-full">
         <div className="w-full flex justify-between ">
           <section className="w-full flex flex-col   gap-4 ">
-            <h2 className="font-semibold text-lg">Nuevo Pedido</h2>
+            <h2 className="font-semibold text-lg">Devolucion de Materiales</h2>
             <Input
               className="w-40"
               classNames={{
@@ -192,16 +192,16 @@ const NuevoPedido = ({ userData }) => {
                 </Button>
               </div>
             </form>
-            <TablaPedidos
+            <TablaDevolucion
               arraySelected={arraySelected}
               setArraySelected={setArraySelected}
             />
           </section>
         </div>
       </div>
-      <PreviewPedidos />
+      <PreviewDevoluciones />
     </div>
   );
 };
 
-export default NuevoPedido;
+export default Devolucion;

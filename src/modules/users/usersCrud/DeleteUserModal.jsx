@@ -23,7 +23,7 @@ const DeleteUserModal = ({
     axios
       .delete(url, config)
       .then((res) => {
-        toast.success("Los datos se actualizaron correctamente");
+        toast.success("El usuario se elimino correctamente");
         onOpenChange(false);
         setResetTable(resetTable + 1);
       })

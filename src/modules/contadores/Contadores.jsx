@@ -5,6 +5,9 @@ import NuevoPedido from "./components/nuevoPedido/NuevoPedido";
 import SolicitudMateriales from "./components/solicitudMateriales/SolicitudMateriales";
 import SolicitudContadores from "./components/solicitudContadores/SolicitudContadores";
 import SolicitudClacs from "./components/solicitudClacs/SolicitudClacs";
+import { MdAssignmentReturn } from "react-icons/md";
+import Devolucion from "./components/devolucion/Devolucion";
+import SolicitudDevoluciones from "./components/solicitudDevoluciones/SolicitudDevoluciones";
 
 const Contadores = ({ userData }) => {
   const [selectComponent, setSelectComponent] = useState("pedidos");
@@ -20,7 +23,16 @@ const Contadores = ({ userData }) => {
             onClick={() => setSelectComponent("pedidos")}
             endContent={<FaClipboardList className="text-2xl" />}
           >
-            <p className="text-sm">Nuevo Pedido</p>
+            <p className="text-sm">Pedido</p>
+          </Button>
+          <Button
+            className={`flex items-center gap-4 p-4 hover:bg-red-500 bg-black text-white h-10 ${
+              selectComponent === "devolucion" ? "bg-red-500" : ""
+            }`}
+            onClick={() => setSelectComponent("devolucion")}
+            endContent={<MdAssignmentReturn className="text-2xl" />}
+          >
+            <p className="text-sm">Devolución</p>
           </Button>
           <Button
             className={`flex items-center gap-4 p-4 hover:bg-red-500 bg-black text-white h-10 ${
@@ -49,9 +61,20 @@ const Contadores = ({ userData }) => {
           >
             <p className="text-sm">Sol. Clacs</p>
           </Button>
+          <Button
+            className={`flex items-center gap-4 p-4 hover:bg-red-500 bg-black text-white h-10 ${
+              selectComponent === "solicitud_devoluciones" ? "bg-red-500" : ""
+            }`}
+            onClick={() => setSelectComponent("solicitud_devoluciones")}
+            endContent={<FaClipboardList className="text-2xl" />}
+          >
+            <p className="text-sm">Sol. Devoluciones</p>
+          </Button>
         </div>
       </section>
       {selectComponent === "pedidos" && <NuevoPedido userData={userData} />}
+      {selectComponent === "devolucion" && <Devolucion userData={userData} />}
+
       {selectComponent === "solicitud_materiales" && (
         <SolicitudMateriales userData={userData} />
       )}
@@ -60,6 +83,9 @@ const Contadores = ({ userData }) => {
       )}
       {selectComponent === "solicitud_clacs" && (
         <SolicitudClacs userData={userData} />
+      )}
+      {selectComponent === "solicitud_devoluciones" && (
+        <SolicitudDevoluciones userData={userData} />
       )}
     </div>
   );

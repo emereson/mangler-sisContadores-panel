@@ -4,6 +4,7 @@ import { FaClipboardList, FaTools, FaWpforms } from "react-icons/fa";
 import { MdOutlinePlaylistRemove } from "react-icons/md";
 import Pedidos from "./components/pedidos/Pedidos";
 import ModalMateriales from "./components/materiales/ModalMateriales";
+import StockMateriales from "./components/pedidos/components/StockMateriales";
 
 const Almacen = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -23,14 +24,23 @@ const Almacen = () => {
           </Button>
           <Button
             className="flex items-center gap-4 p-4 hover:bg-red-500 bg-black text-white h-10"
+            onClick={() => setSelectComponent("stock")}
+            endContent={<FaClipboardList className="text-2xl" />}
+          >
+            <p className="text-sm">Stock Materiales</p>
+          </Button>
+          <Button
+            className="flex items-center gap-4 p-4 hover:bg-red-500 bg-black text-white h-10"
             onClick={onOpen}
             endContent={<FaTools className="text-xl" />}
           >
-            <p className="text-sm">Materiales</p>
+            <p className="text-sm">Agregar Material</p>
           </Button>
         </div>
       </section>
       {selectComponent === "pedidos" && <Pedidos />}
+      {selectComponent === "stock" && <StockMateriales />}
+
       <ModalMateriales onOpenChange={onOpenChange} isOpen={isOpen} />
     </div>
   );

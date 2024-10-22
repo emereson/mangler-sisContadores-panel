@@ -10,12 +10,16 @@ import {
   TableHeader,
   TableRow,
   Spinner,
+  Select,
+  SelectItem,
+  Input,
 } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import config from "../../../../../utils/getToken";
+import ContadoresYClacs from "./components-confirmarPedido/ContadoresYClacs";
+import { useForm } from "react-hook-form";
 
 const ConfirmarPedidoModal = ({
   onOpenChange,
@@ -23,61 +27,43 @@ const ConfirmarPedidoModal = ({
   pedidoSeleccionado,
   fetchPedidos,
 }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm();
   const [loading, setLoading] = useState(false);
   const [tipoContadores, setTipoContadores] = useState([]);
-  const [barcode, setBarcode] = useState("");
-  const [barcodeCLac, setBarcodeClac] = useState("");
   const [scannedCodes, setScannedCodes] = useState([]);
   const [scannedCodesClack, setScannedCodesClack] = useState([]);
-  const [activeContador, setActiveContador] = useState(null);
-  const [activeClack, setActiveClack] = useState(false);
-
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [pedido, setPedido] = useState(null);
   const barcodeInputRef = useRef(null);
   const barcodeClacInputRef = useRef(null);
 
-  const handleKeyDown = (e, contador) => {
-    e.preventDefault();
-    if (e.key === "Enter") {
-      const total =
-        tipoContadores.find((c) => c.contador === contador)?.total || 0;
-      const currentScans =
-        scannedCodes.find((c) => c.contador === contador)?.codigos.length || 0;
+  const getPedido = () => {
+    const url = `${import.meta.env.VITE_URL_API}/pedido/${
+      pedidoSeleccionado?.id
+    }`;
 
-      if (barcode && currentScans < total) {
-        setScannedCodes((prevCodes) => {
-          const existingEntry = prevCodes.find((c) => c.contador === contador);
-          if (existingEntry) {
-            // Si ya existe, agrega el nuevo código
-            return prevCodes.map((c) =>
-              c.contador === contador
-                ? { ...c, codigos: [...c.codigos, barcode] }
-                : c
-            );
-          } else {
-            // Si no existe, crea una nueva entrada
-            return [...prevCodes, { contador, codigos: [barcode] }];
-          }
-        });
-        toast.success(`Código escaneado para ${contador}: ${barcode}`);
-        setBarcode("");
-      } else if (currentScans >= total) {
-        toast.error(`Se ha alcanzado el total de escaneos para ${contador}.`);
-      }
-    } else {
-      setBarcode((prevBarcode) => prevBarcode + e.key);
-    }
+    axios.get(url, config).then((res) => {
+      setPedido(res.data.pedido);
+    });
   };
 
   useEffect(() => {
+    getPedido();
     if (isOpen) {
       barcodeInputRef.current?.focus();
     }
     setScannedCodes([]);
     setScannedCodesClack([]);
-  }, [isOpen]);
+  }, [isOpen, pedidoSeleccionado]);
 
   useEffect(() => {
-    if (pedidoSeleccionado) {
+    if (pedido) {
       const acumuladores = {
         15: 0,
         20: 0,
@@ -87,7 +73,7 @@ const ConfirmarPedidoModal = ({
         50: 0,
       };
 
-      pedidoSeleccionado.lista_pedidos?.forEach((pedido) => {
+      pedido.lista_pedidos?.forEach((pedido) => {
         const descripcion = pedido?.materiale?.descripcion;
 
         if (descripcion?.includes("15 MM")) {
@@ -117,14 +103,12 @@ const ConfirmarPedidoModal = ({
 
       setTipoContadores(resultado);
     }
-  }, [pedidoSeleccionado]);
+  }, [pedido]);
 
   const handleConfirmarDespacho = async () => {
     setLoading(true);
     try {
-      const url = `${import.meta.env.VITE_URL_API}/contador/${
-        pedidoSeleccionado.id
-      }`;
+      const url = `${import.meta.env.VITE_URL_API}/contador/${pedido.id}`;
 
       axios
         .post(
@@ -145,41 +129,18 @@ const ConfirmarPedidoModal = ({
     }
   };
 
-  const handleCodeClick = (contador, codeToRemove) => {
-    setScannedCodes((prevCodes) =>
-      prevCodes
-        .map((entry) =>
-          entry.contador === contador
-            ? {
-                ...entry,
-                codigos: entry.codigos.filter((code) => code !== codeToRemove),
-              }
-            : entry
-        )
-        .filter((entry) => entry.codigos.length > 0)
-    );
-    toast.success(`Código ${codeToRemove} eliminado.`);
+  const submit = (data) => {
+    const url = `${import.meta.env.VITE_URL_API}/lista-pedido/${
+      selectedMaterial?.id
+    }`;
+
+    axios.patch(url, data, config).then((res) => {
+      getPedido();
+      setSelectedMaterial(null);
+    });
   };
 
-  const handleBarcodeChange = (event) => {
-    setBarcodeClac(event.target.value);
-  };
-
-  // Función para agregar el código escaneado a la lista
-  const handleAddScannedCode = () => {
-    if (barcodeCLac) {
-      setScannedCodesClack((prevCodes) => [...prevCodes, barcodeCLac]);
-      setBarcodeClac("");
-    }
-  };
-  // Función para manejar el clic en un código escaneado
-  const handleCodeClacClick = (contador, code) => {
-    setScannedCodesClack((prevCodes) =>
-      prevCodes.filter((item) => item !== code)
-    );
-  };
-
-  console.log(scannedCodesClack);
+  console.log(selectedMaterial);
 
   return (
     <Modal
@@ -228,26 +189,75 @@ const ConfirmarPedidoModal = ({
                         <TableColumn className="text-xs">ESTADO</TableColumn>
                       </TableHeader>
                       <TableBody>
-                        <TableRow key={pedidoSeleccionado.id}>
+                        <TableRow key={pedido.id}>
                           <TableCell className="text-xs">
-                            {pedidoSeleccionado.fecha}
+                            {pedido.fecha}
                           </TableCell>
-                          <TableCell className="text-xs">
-                            {pedidoSeleccionado.id}
-                          </TableCell>
+                          <TableCell className="text-xs">{pedido.id}</TableCell>
                           <TableCell className="text-xs ">
-                            {pedidoSeleccionado.actividad}
+                            {pedido.actividad}
                           </TableCell>
                           <TableCell className="text-xs">
-                            {pedidoSeleccionado.estado}
+                            {pedido.estado}
                           </TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
                   </div>
 
-                  <div className="flex flex-col gap-0">
+                  <div className="flex flex-col gap-2">
                     <h3 className="text-sm">Lista de los Materiales pedidos</h3>
+                    {selectedMaterial && (
+                      <form
+                        action=""
+                        onSubmit={handleSubmit(submit)}
+                        className="flex gap-2 items-end"
+                        key={selectedMaterial?.id}
+                      >
+                        <Input
+                          classNames={{
+                            inputWrapper: ["border-neutral-400"],
+                          }}
+                          type="text"
+                          label="Código"
+                          id="codigo"
+                          size="sm"
+                          value={selectedMaterial?.materiale.codigo}
+                          labelPlacement="outside"
+                          variant="bordered"
+                          isInvalid={!!errors?.codigo}
+                          color={errors?.codigo ? "danger" : ""}
+                          errorMessage={errors?.codigo?.message}
+                        />
+
+                        {/* Campo Descripcion */}
+                        <Input
+                          classNames={{
+                            inputWrapper: ["border-neutral-400 "],
+                          }}
+                          defaultValue={selectedMaterial?.cantidad}
+                          type="number"
+                          label="Cantidad"
+                          id="descripcion"
+                          {...register("cantidad")}
+                          size="sm"
+                          labelPlacement="outside"
+                          variant="bordered"
+                          isInvalid={!!errors?.descripcion}
+                          color={errors?.descripcion ? "danger" : ""}
+                          errorMessage={errors?.descripcion?.message}
+                        />
+
+                        <Button
+                          type="submit"
+                          color="danger"
+                          className="w-40 "
+                          size="sm"
+                        >
+                          Guardar
+                        </Button>
+                      </form>
+                    )}
                     <Table
                       aria-label="Example static collection table ssa"
                       selectionMode="single"
@@ -269,8 +279,11 @@ const ConfirmarPedidoModal = ({
                         <TableColumn className="text-xs">CANTIDAD</TableColumn>
                       </TableHeader>
                       <TableBody>
-                        {pedidoSeleccionado?.lista_pedidos.map((material) => (
-                          <TableRow key={`material-${material.id}`}>
+                        {pedido?.lista_pedidos.map((material) => (
+                          <TableRow
+                            key={`material-${material.id}`}
+                            onClick={() => setSelectedMaterial(material)}
+                          >
                             <TableCell className="text-xs">
                               {material.materiale.id}
                             </TableCell>
@@ -289,110 +302,15 @@ const ConfirmarPedidoModal = ({
                     </Table>
                   </div>
                 </div>
-                <div className="h-full flex flex-wrap gap-4">
-                  {tipoContadores.map((contadores, index) => (
-                    <div
-                      key={index}
-                      onClick={() => {
-                        setActiveContador(contadores.contador),
-                          setActiveClack(false);
-                      }}
-                      className={`flex-col border-2 rounded-xl transition-all duration-500 cursor-pointer p-2 w-[150px] gap-2 ${
-                        activeContador === contadores.contador
-                          ? "border-blue-500"
-                          : "border-zinc-300"
-                      }`}
-                      style={
-                        contadores.total === 0
-                          ? { display: "none" }
-                          : { display: "flex" }
-                      }
-                    >
-                      <h4 className="text-sm border-b-1 border-black">
-                        Contadores{" "}
-                        <b className="text-blue-500">{contadores.contador}</b>
-                      </h4>
-
-                      <div className="flex flex-col gap-2">
-                        <input
-                          id={`contadorInput${contadores.contador}`}
-                          className="none"
-                          ref={barcodeInputRef}
-                          type="text"
-                          value={barcode}
-                          onKeyDown={(e) =>
-                            activeContador === contadores.contador &&
-                            handleKeyDown(e, contadores.contador)
-                          }
-                        />
-                        <h5 className="text-xs">SERIE :</h5>
-                        {(
-                          scannedCodes.find(
-                            (c) => c.contador === contadores.contador
-                          )?.codigos || []
-                        ).map((code, codeIndex) => (
-                          <p
-                            key={codeIndex}
-                            className="text-xs border-t-1 pt-1"
-                            onClick={() =>
-                              handleCodeClick(contadores.contador, code)
-                            } // Agregar el manejador de clic
-                          >
-                            {code}
-                          </p>
-                        ))}
-                        <p className="text-center border-t-1 pt-1">
-                          <b className="text-red-500">
-                            {scannedCodes.find(
-                              (c) => c.contador === contadores.contador
-                            )?.codigos.length || 0}{" "}
-                          </b>
-                          de {contadores.total}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div
-                  onClick={() => {
-                    setActiveClack(true);
-                    setActiveContador(null); // Asegúrate de definir 'setActiveContador'
-                  }}
-                  className={`flex-col border-2 rounded-xl transition-all duration-500 cursor-pointer p-2 w-[150px] gap-2 ${
-                    activeClack ? "border-blue-500" : "border-zinc-300"
-                  }`}
-                >
-                  <h4 className="text-sm border-b-1 border-black">Clac</h4>
-                  <div className="flex flex-col gap-2">
-                    <input
-                      id={`clac`}
-                      className="none"
-                      ref={barcodeClacInputRef}
-                      type="text"
-                      value={barcodeCLac}
-                      onChange={handleBarcodeChange} // Manejar cambios en la entrada
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                          handleAddScannedCode(); // Agregar código al presionar Enter
-                          event.preventDefault(); // Evitar el comportamiento predeterminado
-                        }
-                      }}
-                      placeholder="Escanea o ingresa un código" // Opcional: Placeholder para el input
-                    />
-                    <h5 className="text-xs">SERIE :</h5>
-                    {scannedCodesClack.map((code, codeIndex) => (
-                      <p
-                        key={codeIndex}
-                        className="text-xs border-t-1 pt-1 cursor-pointer"
-                        onClick={() =>
-                          handleCodeClacClick(contadores.contador, code)
-                        } // Llamar manejador de clic
-                      >
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                </div>
+                <ContadoresYClacs
+                  barcodeInputRef={barcodeInputRef}
+                  barcodeClacInputRef={barcodeClacInputRef}
+                  tipoContadores={tipoContadores}
+                  scannedCodesClack={scannedCodesClack}
+                  setScannedCodesClack={setScannedCodesClack}
+                  scannedCodes={scannedCodes}
+                  setScannedCodes={setScannedCodes}
+                />
               </div>
             </ModalBody>
           </>

@@ -14,7 +14,15 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { FaEye, FaEyeSlash, FaIdCardAlt, FaPhone } from "react-icons/fa";
+import {
+  FaAddressCard,
+  FaBarcode,
+  FaEye,
+  FaEyeSlash,
+  FaIdCard,
+  FaIdCardAlt,
+  FaPhone,
+} from "react-icons/fa";
 import config from "../../../utils/getToken";
 
 const UpdateUserModal = ({
@@ -24,37 +32,16 @@ const UpdateUserModal = ({
   setResetTable,
   resetTable,
 }) => {
-  const { register, handleSubmit, reset, watch } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm();
   const [isVisible, setIsVisible] = useState(false);
-  const [errors, setErrors] = useState({});
-
-  const validForm = () => {
-    let valid = true;
-    const newErrors = {};
-
-    if (!watch("name")) {
-      newErrors.name = "El nombre es obligatorio.";
-      valid = false;
-    }
-
-    if (!watch("email")) {
-      newErrors.email = "El correo es obligatorio.";
-      valid = false;
-    }
-
-    if (!watch("phoneNumber")) {
-      newErrors.phoneNumber = "El telefono es obligatorio.";
-      valid = false;
-    }
-
-    setErrors(newErrors);
-    return valid;
-  };
 
   const submit = (data) => {
-    if (!validForm()) {
-      return;
-    }
     const url = `${import.meta.env.VITE_URL_API}/user/${selectedUser.id}`;
     axios
       .patch(url, data, config)
@@ -65,13 +52,13 @@ const UpdateUserModal = ({
         reset();
       })
       .catch((err) => {
+        console.log(err);
+
         toast.error("Hubo un error al guardar los datos");
       });
   };
 
   const toggleVisibility = () => setIsVisible(!isVisible);
-
-  const date = new Date().toISOString().split("T")[0];
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
@@ -97,18 +84,18 @@ const UpdateUserModal = ({
                     classNames={{
                       inputWrapper: ["border-neutral-400"],
                     }}
-                    isRequired
+                    variant="bordered"
                     type="text"
-                    label="Nombres"
-                    {...register("name")}
-                    id="name"
-                    variant="bordered"
-                    defaultValue={selectedUser.name}
-                    isInvalid={!!errors?.nombre}
-                    color={errors?.nombre ? "danger" : ""}
-                    errorMessage={errors?.nombre}
+                    label="Codigo"
+                    {...register("codigo", {
+                      required: "El codigo es obligatorio.",
+                    })}
+                    isInvalid={!!errors.codigo}
+                    color={errors.codigo ? "danger" : ""}
+                    errorMessage={errors.codigo?.message}
+                    defaultValue={selectedUser.codigo}
                     endContent={
-                      <FaIdCardAlt className="text-neutral-600 text-2xl pointer-events-none flex-shrink-0" />
+                      <FaBarcode className="text-neutral-600 text-2xl pointer-events-none flex-shrink-0" />
                     }
                   />
 
@@ -117,17 +104,18 @@ const UpdateUserModal = ({
                       inputWrapper: ["border-neutral-400"],
                     }}
                     isRequired
-                    type="email"
-                    label="Correo"
-                    {...register("email")}
-                    defaultValue={selectedUser.email}
-                    id="email"
                     variant="bordered"
-                    isInvalid={!!errors?.email}
-                    color={errors?.email ? "danger" : ""}
-                    errorMessage={errors?.email}
+                    type="text"
+                    label="Nombre"
+                    {...register("nombre", {
+                      required: "El nombre es obligatorio.",
+                    })}
+                    defaultValue={selectedUser?.nombre}
+                    isInvalid={!!errors.nombre}
+                    color={errors.nombre ? "danger" : ""}
+                    errorMessage={errors.nombre?.message}
                     endContent={
-                      <FaPhone className="text-neutral-600 text-2xl pointer-events-none flex-shrink-0" />
+                      <FaAddressCard className="text-neutral-600 text-2xl pointer-events-none flex-shrink-0" />
                     }
                   />
 
@@ -136,15 +124,58 @@ const UpdateUserModal = ({
                       inputWrapper: ["border-neutral-400"],
                     }}
                     isRequired
-                    type="tel"
+                    variant="bordered"
+                    type="text"
+                    label="Apellidos"
+                    {...register("apellidos", {
+                      required: "Los apellidos son obligatorio.",
+                    })}
+                    defaultValue={selectedUser?.apellidos}
+                    isInvalid={!!errors.apellidos}
+                    color={errors.apellidos ? "danger" : ""}
+                    errorMessage={errors.apellidos?.message}
+                    endContent={
+                      <FaAddressCard className="text-neutral-600 text-2xl pointer-events-none flex-shrink-0" />
+                    }
+                  />
+
+                  <Input
+                    classNames={{
+                      inputWrapper: ["border-neutral-400"],
+                    }}
+                    isRequired
+                    variant="bordered"
+                    type="text"
+                    label="Dni"
+                    defaultValue={selectedUser?.dni}
+                    {...register("dni", {
+                      required: "El dni es obligatorio.",
+                      minLength: 6,
+                    })}
+                    isInvalid={!!errors.dni}
+                    color={errors.dni ? "danger" : ""}
+                    errorMessage={errors.dni?.message}
+                    endContent={
+                      <FaIdCard className="text-neutral-600 text-2xl pointer-events-none flex-shrink-0" />
+                    }
+                  />
+
+                  <Input
+                    classNames={{
+                      inputWrapper: ["border-neutral-400"],
+                    }}
+                    isRequired
+                    variant="bordered"
+                    type="text"
                     label="Celular"
-                    {...register("phoneNumber")}
-                    defaultValue={selectedUser.phoneNumber}
-                    id="phoneNumber"
-                    variant="bordered"
-                    isInvalid={!!errors?.phoneNumber}
-                    color={errors?.phoneNumber ? "danger" : ""}
-                    errorMessage={errors?.phoneNumber}
+                    defaultValue={selectedUser?.celular}
+                    {...register("celular", {
+                      required: "El celular es obligatorio.",
+                      minLength: 6,
+                    })}
+                    isInvalid={!!errors.celular}
+                    color={errors.celular ? "danger" : ""}
+                    errorMessage={errors.celular?.message}
                     endContent={
                       <FaPhone className="text-neutral-600 text-2xl pointer-events-none flex-shrink-0" />
                     }
@@ -154,13 +185,9 @@ const UpdateUserModal = ({
                     classNames={{
                       inputWrapper: ["border-neutral-400"],
                     }}
-                    label="Contraseña nueva"
                     variant="bordered"
+                    label="Contraseña"
                     {...register("password")}
-                    id="password"
-                    isInvalid={errors?.password ? true : false}
-                    color={errors?.password ? "danger" : ""}
-                    errorMessage={errors?.password}
                     type={isVisible ? "text" : "password"}
                     endContent={
                       <button
@@ -190,12 +217,14 @@ const UpdateUserModal = ({
 
                   <Select
                     label="role"
-                    variant="bordered"
                     {...register("role")}
                     defaultSelectedKeys={[selectedUser.role]}
+                    variant="bordered"
                   >
-                    <SelectItem key="user">Usuario </SelectItem>
-                    <SelectItem key="admin">Administrador</SelectItem>
+                    <SelectItem key="Administrador">Administrador</SelectItem>
+                    <SelectItem key="Brigada">Brigada</SelectItem>
+                    <SelectItem key="Capataz">Capataz</SelectItem>
+                    <SelectItem key="Almacén">Almacén</SelectItem>
                   </Select>
                 </div>
 

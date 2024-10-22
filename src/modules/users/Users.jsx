@@ -44,7 +44,7 @@ const Users = ({ userData }) => {
           <form className="flex flex-wrap  gap-2 items-center">
             <Input
               className="w-[300px]"
-              label="Buscar Usuario por correo o celular"
+              label="Buscar Usuario por  codigo o nombre"
               size="md"
               variant="bordered"
               type="search"

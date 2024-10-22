@@ -85,36 +85,54 @@ const Header = ({ userData }) => {
           )}
         </div>
       </div>
-      <nav
-        className={`absolute top-[70px] min-w-[300px] right-0 h-[calc(100vh-70px)] border-t-1 bg-gray-50 flex flex-col items-start py-5  w-full   shadow-xl ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
-        } transition-all duration-400 border-t-0 py-5 menu-container`}
-      >
-        <Link
-          className="text-black flex items-center gap-4 p-4 hover:bg-gray-200 w-full"
-          to="/"
-          onClick={() => setIsMenuOpen(false)}
+      {userData.role === "Administrador" && (
+        <nav
+          className={`absolute top-[70px] min-w-[300px] right-0 h-[calc(100vh-70px)] border-t-1 bg-gray-50 flex flex-col items-start py-5  w-full   shadow-xl ${
+            isMenuOpen ? "translate-x-0" : "translate-x-full"
+          } transition-all duration-400 border-t-0 py-5 menu-container`}
         >
-          <FaWpforms className="text-xl" />
-          <p className="text-lg">Almacen</p>
-        </Link>
-        <Link
-          className="text-black flex items-center gap-4 p-4 hover:bg-gray-200 w-full"
-          to="/contadores"
-          onClick={() => setIsMenuOpen(false)}
+          <Link
+            className="text-black flex items-center gap-4 p-4 hover:bg-gray-200 w-full"
+            to="/"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <FaWpforms className="text-xl" />
+            <p className="text-lg">Almacen</p>
+          </Link>
+          <Link
+            className="text-black flex items-center gap-4 p-4 hover:bg-gray-200 w-full"
+            to="/contadores"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <FaWpforms className="text-xl" />
+            <p className="text-lg">Contadores</p>
+          </Link>
+          <Link
+            className="text-black flex items-center gap-4 p-4 hover:bg-gray-200 w-full"
+            to="/usuarios"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <FaWpforms className="text-xl" />
+            <p className="text-lg">Usuarios</p>
+          </Link>
+        </nav>
+      )}
+      {userData.role === "Brigada" && (
+        <nav
+          className={`absolute top-[70px] min-w-[300px] right-0 h-[calc(100vh-70px)] border-t-1 bg-gray-50 flex flex-col items-start py-5  w-full   shadow-xl ${
+            isMenuOpen ? "translate-x-0" : "translate-x-full"
+          } transition-all duration-400 border-t-0 py-5 menu-container`}
         >
-          <FaWpforms className="text-xl" />
-          <p className="text-lg">Contadores</p>
-        </Link>
-        <Link
-          className="text-black flex items-center gap-4 p-4 hover:bg-gray-200 w-full"
-          to="/usuarios"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          <FaWpforms className="text-xl" />
-          <p className="text-lg">Usuarios</p>
-        </Link>
-      </nav>
+          <Link
+            className="text-black flex items-center gap-4 p-4 hover:bg-gray-200 w-full"
+            to="/contadores"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <FaWpforms className="text-xl" />
+            <p className="text-lg">Contadores</p>
+          </Link>
+        </nav>
+      )}
     </div>
   );
 };

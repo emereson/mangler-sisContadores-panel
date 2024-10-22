@@ -69,7 +69,11 @@ const NuevoPedido = ({ userData }) => {
 
   return (
     <div className="w-full  h-full p-4 flex">
-      <div className="w-1/2 pr-4  h-full">
+      <div
+        className={`${
+          userData.role === "Brigada" ? "w-full " : "w-1/2 "
+        } pr-4  h-full`}
+      >
         <div className="w-full flex justify-between ">
           <section className="w-full flex flex-col   gap-4 ">
             <h2 className="font-semibold text-lg">Nuevo Pedido</h2>
@@ -199,7 +203,7 @@ const NuevoPedido = ({ userData }) => {
           </section>
         </div>
       </div>
-      <PreviewPedidos />
+      {userData.role !== "Brigada" && <PreviewPedidos />}
     </div>
   );
 };

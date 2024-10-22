@@ -14,7 +14,7 @@ const getTodayDate = () => {
   const day = String(today.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
-const Pedidos = () => {
+const Pedidos = ({ userData }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const [fecha, setFecha] = useState(getTodayDate());
@@ -62,14 +62,15 @@ const Pedidos = () => {
               </Button>
             </div>
             <div className="w-24 h-20 shadow-zinc-500 shadow-md rounded-xl border-zinc-400 border-2  text-black flex flex-col items-center justify-center mt-[-20px]">
-              <h2 className="text-sm font-semibold">Medidores</h2>
+              <h2 className="text-sm font-semibold">N pedidos</h2>
               <span className="text-sm font-semibold text-red-500">
                 {pedidos.length}
               </span>
             </div>
           </div>
         </section>
-        {pedidoSeleccionado &&
+        {userData.userData.role !== "Capataz" &&
+          pedidoSeleccionado &&
           pedidoSeleccionado?.estado !== "despachado" &&
           pedidoSeleccionado?.estado !== "anulado" && (
             <div className="w-full flex justify-between mt-4">

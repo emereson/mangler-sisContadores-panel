@@ -60,7 +60,7 @@ const NuevoPedido = ({ userData }) => {
     setArraySelected((prevArray) => ({
       fecha: fecha,
       supervisor: `${userData.nombre} ${userData.apellidos}`,
-      operario_id: selectOperario,
+      operario_id: userData.role === "Brigada" ? userData.id : selectOperario,
       lista_materiales: [...prevArray.lista_materiales, nuevoMaterial],
     }));
 
@@ -104,38 +104,55 @@ const NuevoPedido = ({ userData }) => {
               labelPlacement="outside"
               type="text"
               variant="bordered"
-              value={`${userData.nombre} ${userData.apellidos}`}
+              value="MANGLER YERREN"
               label="Supervisor"
               id="supervisor"
               radius="sm"
               size="sm"
             />
+            {userData.role === "Brigada" ? (
+              <Input
+                className="w-72"
+                classNames={{
+                  inputWrapper: ["border-neutral-600"],
+                }}
+                labelPlacement="outside"
+                type="text"
+                variant="bordered"
+                value={`${userData.nombre} ${userData.apellidos}`}
+                label="Supervisor"
+                id="supervisor"
+                radius="sm"
+                size="sm"
+              />
+            ) : (
+              <Autocomplete
+                className="w-full"
+                labelPlacement="outside"
+                label="Operario"
+                placeholder="Ingrese el nombre o codigo del operario"
+                variant="bordered"
+                isInvalid={!!errors.operario}
+                color={errors.operario ? "danger" : ""}
+                errorMessage={errors.operario?.message}
+                id="operario"
+                radius="sm"
+                innerWrapper
+                size="sm"
+                onSelectionChange={setselectOperario}
+              >
+                {operarios.map((operario) => (
+                  <AutocompleteItem
+                    key={operario.id}
+                    value={operario.id}
+                    textValue={`${operario.nombre}`}
+                  >
+                    {operario.codigo} - {operario.nombre} - {operario.dni}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+            )}
 
-            <Autocomplete
-              className="w-full"
-              labelPlacement="outside"
-              label="Operario"
-              placeholder="Ingrese el nombre o codigo del operario"
-              variant="bordered"
-              isInvalid={!!errors.operario}
-              color={errors.operario ? "danger" : ""}
-              errorMessage={errors.operario?.message}
-              id="operario"
-              radius="sm"
-              innerWrapper
-              size="sm"
-              onSelectionChange={setselectOperario}
-            >
-              {operarios.map((operario) => (
-                <AutocompleteItem
-                  key={operario.id}
-                  value={operario.id}
-                  textValue={`${operario.nombre}`}
-                >
-                  {operario.codigo} - {operario.nombre} - {operario.dni}
-                </AutocompleteItem>
-              ))}
-            </Autocomplete>
             <form
               className="w-full flex flex-col gap-4"
               onSubmit={handleSubmit(submit)}

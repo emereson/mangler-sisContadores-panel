@@ -14,7 +14,7 @@ const Almacen = ({ userData }) => {
       <section className="w-screen bg-zinc-50 p-4 h-[70px] flex  shadow-lg items-center">
         <h1 className="text-2xl font-bold">Almacen</h1>
         <div className=" w-full flex items-center justify-center gap-4">
-          {userData.role === "Capataz" ? (
+          {userData?.role === "Capataz" ? (
             <Button
               className="flex items-center gap-4 p-4 hover:bg-red-500 bg-black text-white h-10"
               onClick={() => setSelectComponent("pedidos")}
@@ -22,7 +22,7 @@ const Almacen = ({ userData }) => {
             >
               <p className="text-sm">Pedidos</p>
             </Button>
-          ) : userData.role === "Almacen" ? (
+          ) : userData?.role === "Almacen" ? (
             <Button
               className="flex items-center gap-4 p-4 hover:bg-red-500 bg-black text-white h-10"
               onClick={() => setSelectComponent("pedidos")}

@@ -69,7 +69,7 @@ const Pedidos = ({ userData }) => {
             </div>
           </div>
         </section>
-        {userData.role !== "Capataz" &&
+        {userData?.role !== "Capataz" &&
           pedidoSeleccionado &&
           pedidoSeleccionado?.estado !== "despachado" &&
           pedidoSeleccionado?.estado !== "anulado" && (

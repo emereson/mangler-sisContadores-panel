@@ -189,16 +189,18 @@ const ConfirmarPedidoModal = ({
                         <TableColumn className="text-xs">ESTADO</TableColumn>
                       </TableHeader>
                       <TableBody>
-                        <TableRow key={pedido.id}>
+                        <TableRow key={pedido?.id}>
                           <TableCell className="text-xs">
-                            {pedido.fecha}
+                            {pedido?.fecha}
                           </TableCell>
-                          <TableCell className="text-xs">{pedido.id}</TableCell>
+                          <TableCell className="text-xs">
+                            {pedido?.id}
+                          </TableCell>
                           <TableCell className="text-xs ">
-                            {pedido.actividad}
+                            {pedido?.actividad}
                           </TableCell>
                           <TableCell className="text-xs">
-                            {pedido.estado}
+                            {pedido?.estado}
                           </TableCell>
                         </TableRow>
                       </TableBody>

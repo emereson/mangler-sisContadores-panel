@@ -19,7 +19,7 @@ function App() {
       <Routes>
         <Route path="/log-in" element={<Login />} />
         <Route element={<ProtectedRoutes />}>
-          <Route path="/" element={<Almacen userData={userData} />} />
+          <Route path="/" element={<Almacen userData={userData}  />} />
           <Route path="/usuarios" element={<Users userData={userData} />} />
           <Route
             path="/contadores"
